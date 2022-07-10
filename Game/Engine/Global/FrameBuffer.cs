@@ -22,6 +22,7 @@ namespace LadaEngine
 				TextureTarget.Texture2D, texture.Handle, 0);
 
 			sprite = new Sprite(texture);
+
 		}
 
 		public void Start()

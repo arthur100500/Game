@@ -46,15 +46,15 @@ namespace Avoid.Drawing.UI
 		private void CreateTextTexture(string text)
 		{
 			PrivateFontCollection collection = new PrivateFontCollection();
-			collection.AddFontFile(@"Files/font.ttf");
-			FontFamily fontFamily = new FontFamily("Open Sans", collection);
+			collection.AddFontFile(@"Files/minecraft.ttf");
+			FontFamily fontFamily = new FontFamily("Minecraft Rus", collection);
 
 			Font font = new Font(fontFamily, fontSize);
 			
 			var gfx = Graphics.FromImage(bmp);
 			var brush = Brushes.White;
 
-			gfx.TextRenderingHint = TextRenderingHint.AntiAlias;
+			gfx.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			gfx.Clear(Color.Transparent);
 			gfx.DrawString(text, font, brush, new PointF(0, 0));
 

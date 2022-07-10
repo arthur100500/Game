@@ -102,7 +102,6 @@ namespace LadaEngine
 				(int) TextureMagFilter.Nearest);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) TextureWrapMode.Repeat);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) TextureWrapMode.Repeat);
-			//GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
 			return new Texture(handle);
 		}

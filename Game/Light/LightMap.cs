@@ -17,7 +17,7 @@ namespace Game.Light
 		private FrameBuffer lightfbo;
 		private FrameBuffer worldfbo;
 		public Level LightLevel;
-		public LevelRenderer Renderer;
+		internal LightRenderer Renderer;
 		private World.World world;
 		private GameWindow window;
 
@@ -32,7 +32,7 @@ namespace Game.Light
 
 			LightLevel = new Level("Files/Textures/lightmap.png", 3, 3);
 
-			Renderer = new LevelRenderer(LightLevel.textureAtlas, LightLevel);
+			Renderer = new LightRenderer(LightLevel.textureAtlas, LightLevel);
 
 			this.world = world;
 		}

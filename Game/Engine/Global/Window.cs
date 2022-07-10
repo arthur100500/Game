@@ -89,6 +89,8 @@ namespace LadaEngine
 			{
 				FixedUpdate?.Invoke();
 				dt -= fixed_time_update_rate;
+				if(dt > 30)
+					dt = 0;
 			}
 
 			SwapBuffers();

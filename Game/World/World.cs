@@ -56,8 +56,8 @@ namespace Game.World
 			EntityRenderer = new LevelRenderer(entitiesLevel.textureAtlas, entitiesLevel);
 
 			LightMap = new LightMap(window, this);
-			var playerLight = new Light.Light(new Pos(0, 0), LightMap.LightLevel.textureAtlas, new iPos(0, 1));
-			playerLight.Width = playerLight.Height = 30;
+			var playerLight = new Light.Light(new Pos(0, 0), LightMap.LightLevel.textureAtlas, new iPos(0, 1), new OpenTK.Mathematics.Vector4(1, 1, 1, 1.0f));
+			playerLight.Width = playerLight.Height = 10;
 			LightMap.LightLevel.tiles.Add(playerLight);
 		}
 
@@ -121,6 +121,7 @@ namespace Game.World
 
 			
 			player.Render();
+
 			LightMap.LightLevel.tiles[0].Position = player.Position;
 
 			LightMap.RenderWorldStop();

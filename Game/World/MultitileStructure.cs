@@ -144,8 +144,36 @@ namespace Game.World
 				new Platformer.Common.Tile(new Pos(position.X, position.Y + 1), world.Atlas, new iPos(5, 96))
 			};
 
-			var l = new Light.Light(new Pos(position.X, position.Y + 0.5f), world.LightMap.LightLevel.textureAtlas, new iPos(0, 2));
-			l.Width = l.Height = 10;
+			var l = new Light.Light(new Pos(position.X, position.Y + 0.5f), world.LightMap.LightLevel.textureAtlas, new iPos(0, 2), new OpenTK.Mathematics.Vector4(1f, 0.2f, 0f, 1));
+			l.Width = l.Height = 18;
+			world.LightMap.LightLevel.tiles.Add(l);
+			return structure;
+		}
+
+		public static MultitileStructure Amethyst(Pos position, World world)
+		{
+			var structure = new MultitileStructure(world, new Pos(position.X, position.Y));
+			structure.InnerTiles = new Platformer.Common.Tile[]
+			{
+				new Platformer.Common.Tile(new Pos(position.X, position.Y), world.Atlas, new iPos(13, 96)),
+			};
+
+			var l = new Light.Light(new Pos(position.X, position.Y), world.LightMap.LightLevel.textureAtlas, new iPos(0, 2), new OpenTK.Mathematics.Vector4(1, 0.3f, 0.9f, 1));
+			l.Width = l.Height = 7;
+			world.LightMap.LightLevel.tiles.Add(l);
+			return structure;
+		}
+
+		public static MultitileStructure GreenAmethyst(Pos position, World world)
+		{
+			var structure = new MultitileStructure(world, new Pos(position.X, position.Y));
+			structure.InnerTiles = new Platformer.Common.Tile[]
+			{
+				new Platformer.Common.Tile(new Pos(position.X, position.Y), world.Atlas, new iPos(14, 96)),
+			};
+
+			var l = new Light.Light(new Pos(position.X, position.Y), world.LightMap.LightLevel.textureAtlas, new iPos(0, 2), new OpenTK.Mathematics.Vector4(0, 1f, 0.3f, 1));
+			l.Width = l.Height = 5;
 			world.LightMap.LightLevel.tiles.Add(l);
 			return structure;
 		}

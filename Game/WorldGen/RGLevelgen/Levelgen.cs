@@ -11,13 +11,16 @@ namespace Game.WorldGen.RGLevelgen
 	public class LevelGen
 	{
 		static Random random = new Random();
+		public static int chunkMaterial;
 		public RGChunk GenerateChunk(iPos position, World.World world)
 		{
 			//Console.WriteLine("Generating: " + position);
 			RGChunk result = new RGChunk(world);
 			result.Position = position;
 
-			int chunkMaterial = 2 * (random.Next() % 6);
+			chunkMaterial = 2 * (random.Next() % 7);
+			if (position == new iPos(0, 0))
+				chunkMaterial = 12;
 			Pos pos;
 
 			for (int i = 0; i < world.ChunkSize * world.ChunkSize; i++)
@@ -25,10 +28,10 @@ namespace Game.WorldGen.RGLevelgen
 				var d = random.Next() % 2;
 				if (chunkMaterial == 8)
 				{
-					if(random.Next() % 10 != 0)
-					d = 0;
+					if (random.Next() % 10 != 0)
+						d = 0;
 				}
-					iPos tpos = new iPos(0 + d + chunkMaterial, 97);
+				iPos tpos = new iPos(0 + d + chunkMaterial, 97);
 				Pos tilePos = new Pos(position.X * world.ChunkSize + i % world.ChunkSize, position.Y * world.ChunkSize + i / world.ChunkSize);
 				Tile res = new Tile(tilePos.Copy(), world.Atlas, tpos.Copy());
 				tpos.Y++;
@@ -80,8 +83,8 @@ namespace Game.WorldGen.RGLevelgen
 		private void GenEnemies(IChunk chunk, World.World world)
 		{
 			var c = 2 + random.Next() % 3;
-			for(int i = 0; i < c; i++)
-			world.Enemies.Add(new Enemy.Slime(world, new Pos(chunk.Position * world.ChunkSize) + new Pos(5 + random.Next() % 3, 5 + random.Next() % 3)));
+			for (int i = 0; i < c; i++)
+				world.Enemies.Add(new Enemy.Slime(world, new Pos(chunk.Position * world.ChunkSize) + new Pos(5 + random.Next() % 3, 5 + random.Next() % 3)));
 		}
 
 		private void GenFurniture(IChunk chunk, World.World world)
@@ -102,7 +105,7 @@ namespace Game.WorldGen.RGLevelgen
 						continue;
 					}
 
-					
+
 
 					if (!chunk.GetTile(x, y).IsFloor)
 						continue;
@@ -110,9 +113,16 @@ namespace Game.WorldGen.RGLevelgen
 					if (chunk.GetTile(x + 1, y).IsFloor && chunk.GetTile(x, y + 1).IsFloor && chunk.GetTile(x - 1, y).IsFloor && chunk.GetTile(x, y - 1).IsFloor)
 					{
 
-						if (random.Next() % 25 == 0)
+						if (random.Next() % 10 == 0)
 						{
-							world.Entities.Add(MultitileStructure.Table(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y), world));
+							if (chunkMaterial == 12)
+								if (random.Next() % 2 == 0)
+									world.Entities.Add(MultitileStructure.Amethyst(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y), world));
+								else
+									world.Entities.Add(MultitileStructure.GreenAmethyst(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y), world));
+							else
+								if(random.Next() % 3 == 0)
+								world.Entities.Add(MultitileStructure.Table(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y), world));
 							continue;
 						}
 					}
@@ -124,9 +134,9 @@ namespace Game.WorldGen.RGLevelgen
 							continue;
 						}
 					}
-					if(!chunk.GetTile(x, y + 1).IsFloor)
+					if (!chunk.GetTile(x, y + 1).IsFloor)
 					{
-						if(random.Next() % 15 == 0)
+						if (random.Next() % 15 == 0)
 						{
 							world.Entities.Add(MultitileStructure.BigBookshelf(new Pos(chunk.Position.X * world.ChunkSize + x - 1, chunk.Position.Y * world.ChunkSize + y), world));
 							skipOnceAgain = true;
@@ -147,9 +157,9 @@ namespace Game.WorldGen.RGLevelgen
 							world.Entities.Add(MultitileStructure.ChestOpened(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y), world));
 							continue;
 						}
-						if(random.Next() % 10 == 0)
+						if (random.Next() % 10 == 0)
 						{
-							if(random.Next() % 2 == 1)
+							if (random.Next() % 2 == 1)
 								world.Entities.Add(MultitileStructure.PaintingHills(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y + 1.0f), world));
 							else
 								world.Entities.Add(MultitileStructure.PaintingShip(new Pos(chunk.Position.X * world.ChunkSize + x, chunk.Position.Y * world.ChunkSize + y + 1.0f), world));

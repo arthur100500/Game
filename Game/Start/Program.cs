@@ -7,6 +7,7 @@ namespace Platformer
 	{
 		private static void Main(string[] args)
 		{
+			
 			try
 			{
 				var game = new Game();

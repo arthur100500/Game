@@ -17,6 +17,9 @@
       <None Update="Files\fontb.ttf">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Files\minecraft.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None Update="Files\shaders\basic.frag">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>

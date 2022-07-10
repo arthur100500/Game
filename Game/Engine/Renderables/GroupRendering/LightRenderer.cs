@@ -5,7 +5,7 @@ using Platformer.Common;
 
 namespace LadaEngine
 {
-	public class LevelRenderer
+	public class LightRenderer
 	{
 		protected readonly TextureAtlas _atlas;
 		protected readonly int _ebo;
@@ -19,22 +19,33 @@ namespace LadaEngine
 		protected readonly List<float> _verts;
 		public Level level;
 
-		protected static readonly string standart_vert = @"#version 330 core
+		private static readonly string standart_vert = @"#version 330 core
                                         layout(location = 0) in vec3 aPosition;
                                         layout(location = 1) in vec2 aTexCoord;
+										layout(location = 2) in vec4 aLightColor;
 
 										uniform vec2 position;
                                         out vec2 texCoord;
-
+										out vec4 lightColor;
+                                
                                         void main(void)
                                         {
                                             texCoord = aTexCoord;
-
+                                            lightColor = aLightColor;
                                             gl_Position = vec4(aPosition.xy - position.xy, aPosition.z + 0.1, 1.0);
                                         }";
 
-		protected static readonly string standart_frag = StandartShaders.standart_frag;
-		public LevelRenderer(TextureAtlas atlas, Level self)
+		public static readonly string standart_frag = @"#version 330
+                                        out vec4 outputColor;
+                                        in vec2 texCoord;
+                                        in vec4 lightColor;
+
+                                        uniform sampler2D texture0;
+                                        void main()
+                                        {
+	                                        outputColor = texture(texture0, texCoord) * lightColor;
+                                        }";
+		public LightRenderer(TextureAtlas atlas, Level self)
 		{
 			level = self;
 			_atlas = atlas;
@@ -57,26 +68,38 @@ namespace LadaEngine
 				BufferUsageHint.StaticDraw);
 
 			Shader.Use();
+
 			var vertexLocation = Shader.GetAttribLocation("aPosition");
 			GL.EnableVertexAttribArray(vertexLocation);
-			GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+			GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 0 * sizeof(float));
 
 			var texCoordLocation = Shader.GetAttribLocation("aTexCoord");
 			GL.EnableVertexAttribArray(texCoordLocation);
-			GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float),
-				3 * sizeof(float));
+			GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 9 * sizeof(float), 3 * sizeof(float));
+
+			var lightLocation = Shader.GetAttribLocation("aLightColor");
+			GL.EnableVertexAttribArray(lightLocation);
+			GL.VertexAttribPointer(lightLocation, 4, VertexAttribPointerType.Float, false, 9 * sizeof(float), 5 * sizeof(float));
 		}
 
 		public virtual void UpdateBuffers()
 		{
+			/*
+			Shader.Use();
+
 			var vertexLocation = Shader.GetAttribLocation("aPosition");
 			GL.EnableVertexAttribArray(vertexLocation);
-			GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+			GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 0);
 
 			var texCoordLocation = Shader.GetAttribLocation("aTexCoord");
 			GL.EnableVertexAttribArray(texCoordLocation);
-			GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float),
+			GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 9 * sizeof(float),
 				3 * sizeof(float));
+
+			var lightLocation = Shader.GetAttribLocation("aLightColor");
+			GL.EnableVertexAttribArray(lightLocation);
+			GL.VertexAttribPointer(lightLocation, 4, VertexAttribPointerType.Float, false, 9 * sizeof(float), 5 * sizeof(float));
+			*/
 
 			GL.BindVertexArray(_vao);
 
