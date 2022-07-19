@@ -18,7 +18,7 @@ namespace Avoid.Drawing.UI
 	public class TextSprite : IRenderable
 	{
 		// Parameters for text texture
-		private Bitmap bmp;
+		//private Bitmap bmp;
 		private int width = 480;
 		private int height = 50;
 		public int fontSize = 28;
@@ -33,9 +33,9 @@ namespace Avoid.Drawing.UI
 			width = Math.Abs(size.X);
 			height = Math.Abs(size.Y);
 
-			bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			//bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-			Texture texture = Texture.LoadFromBitmap(bmp);
+			Texture texture = new Texture(0); //Texture.LoadFromBitmap(bmp);
 			Shader shader = new Shader(File.ReadAllText("Files/shaders/basic.vert"), File.ReadAllText("Files/shaders/brighttext.frag"), 0);
 
 			sprite = new Sprite(bounds, shader, texture);
@@ -45,6 +45,7 @@ namespace Avoid.Drawing.UI
 
 		private void CreateTextTexture(string text)
 		{
+			/*
 			PrivateFontCollection collection = new PrivateFontCollection();
 			collection.AddFontFile(@"Files/minecraft.ttf");
 			FontFamily fontFamily = new FontFamily("Minecraft Rus", collection);
@@ -61,6 +62,7 @@ namespace Avoid.Drawing.UI
 			sprite.texture.UpdateData(bmp);
 
 			Text = text;
+			*/
 		}
 
 		public void Render()

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL4;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using System.IO;
 
 namespace LadaEngine
 {
@@ -19,27 +22,41 @@ namespace LadaEngine
 			throw new NotImplementedException();
 		}
 
-		public TextureAtlas(Bitmap atlas, int xCount, int yCount)
+		private void FlipImageX(byte[] pixelBytes, int x, int y)
+		{
+			for(int i = 0; i < y; i += 1){
+				for(int j = 0; j < x; j++){
+					byte t = pixelBytes[i * x + j];
+					pixelBytes[i * x + j] = pixelBytes[i * x + x - j - 1];
+					pixelBytes[i * x + x - j - 1] = t;
+				}
+			}
+		}
+
+
+		public TextureAtlas(Image<Rgba32> atlas, int xCount, int yCount)
 		{
 			Width = xCount;
 			Height = yCount;
 			var handle = GL.GenTexture();
 			GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2D, handle);
-			atlas.RotateFlip(RotateFlipType.RotateNoneFlipY);
-			var data = atlas.LockBits(
-				new Rectangle(0, 0, atlas.Width, atlas.Height),
-				ImageLockMode.ReadOnly,
-				PixelFormat.Format32bppArgb);
+
+			atlas.Mutate(x => x.Flip(FlipMode.Vertical));
+			byte[] pixelBytes = new byte[atlas.Width * atlas.Height * 4];
+            atlas.CopyPixelDataTo(pixelBytes);
+			atlas.Mutate(x => x.Flip(FlipMode.Vertical));
+
 			GL.TexImage2D(TextureTarget.Texture2D,
 				0,
 				PixelInternalFormat.Rgba,
 				atlas.Width,
 				atlas.Height,
 				0,
-				OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+				OpenTK.Graphics.OpenGL4.PixelFormat.Rgba,
 				PixelType.UnsignedByte,
-				data.Scan0);
+				pixelBytes);
+
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
 				(int) TextureMinFilter.Nearest);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
@@ -47,7 +64,7 @@ namespace LadaEngine
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) TextureWrapMode.Repeat);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) TextureWrapMode.Repeat);
 			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-			atlas.UnlockBits(data);
+			//atlas.UnlockBits(data);
 
 			Coordinates = new float[xCount * yCount * 8];
 			FillCoords(xCount, yCount);

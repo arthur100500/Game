@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.IO;
 using LadaEngine;
 
@@ -14,7 +15,7 @@ namespace Platformer.Common
 
 		public Level(string atlasPath, int x, int y)
 		{
-			textureAtlas = new TextureAtlas(new Bitmap(atlasPath), x, y);
+			textureAtlas = new TextureAtlas(Image.Load<Rgba32>(atlasPath), x, y);
 			tiles = new List<Tile>();
 			Renderer = new LevelRenderer(textureAtlas, this);
 		}

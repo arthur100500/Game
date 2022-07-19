@@ -1,0 +1,11 @@
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at LadaEngine.TextureAtlas.FlipImage(Byte[] pixelBytes, Int32 x, Int32 y) in /home/arhur/Desktop/myProjects/Game/Game/Engine/Renderables/GroupRendering/TextureAtlas.cs:line 28
+   at LadaEngine.TextureAtlas..ctor(Image`1 atlas, Int32 xCount, Int32 yCount) in /home/arhur/Desktop/myProjects/Game/Game/Engine/Renderables/GroupRendering/TextureAtlas.cs:line 46
+   at Platformer.Common.Level..ctor(String atlasPath, Int32 x, Int32 y) in /home/arhur/Desktop/myProjects/Game/Game/Common/Level/Level.cs:line 18
+   at Game.World.World..ctor(Window window) in /home/arhur/Desktop/myProjects/Game/Game/World/World.cs:line 44
+   at Platformer.Common.GameScene.Load() in /home/arhur/Desktop/myProjects/Game/Game/Scenes/GameScene.cs:line 33
+   at Platformer.Game.LoadEvent() in /home/arhur/Desktop/myProjects/Game/Game/Start/Game.cs:line 53
+   at LadaEngine.Window.OnLoad() in /home/arhur/Desktop/myProjects/Game/Game/Engine/Global/Window.cs:line 75
+   at OpenTK.Windowing.Desktop.GameWindow.Run()
+   at Platformer.Game.Run() in /home/arhur/Desktop/myProjects/Game/Game/Start/Game.cs:line 59
+   at Platformer.Program.Main(String[] args) in /home/arhur/Desktop/myProjects/Game/Game/Start/Program.cs:line 14

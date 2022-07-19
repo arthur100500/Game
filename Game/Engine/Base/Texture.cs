@@ -2,8 +2,9 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL4;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
-
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 namespace LadaEngine
 {
 	public class Texture : IDisposable
@@ -31,25 +32,27 @@ namespace LadaEngine
 		/// </summary>
 		/// <param name="bmp"></param>
 		/// <returns></returns>
-		public static Texture LoadFromBitmap(Bitmap bmp)
+		public static Texture LoadFromBitmap(Image<Rgba32> bmp)
 		{
 			var handle = GL.GenTexture();
 			GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2D, handle);
-			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
-			var data = bmp.LockBits(
-				new Rectangle(0, 0, bmp.Width, bmp.Height),
-				ImageLockMode.ReadOnly,
-				PixelFormat.Format32bppArgb);
+			
+			byte[] pixelBytes = new byte[bmp.Width * bmp.Height * 4];
+			bmp.Mutate(x => x.Flip(FlipMode.Vertical));
+            bmp.CopyPixelDataTo(pixelBytes);
+			bmp.Mutate(x => x.Flip(FlipMode.Vertical));
+
 			GL.TexImage2D(TextureTarget.Texture2D,
 				0,
 				PixelInternalFormat.Rgba,
 				bmp.Width,
 				bmp.Height,
 				0,
-				OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+				OpenTK.Graphics.OpenGL4.PixelFormat.Rgba,
 				PixelType.UnsignedByte,
-				data.Scan0);
+				pixelBytes);
+
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
 				(int) TextureMinFilter.Nearest);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
@@ -57,7 +60,7 @@ namespace LadaEngine
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) TextureWrapMode.Repeat);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) TextureWrapMode.Repeat);
 			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-			bmp.UnlockBits(data);
+
 			return new Texture(handle);
 		}
 
@@ -78,22 +81,23 @@ namespace LadaEngine
 			// For this example, we're going to use .NET's built-in System.Drawing library to load textures.
 
 			// Load the image
-			using (var image = new Bitmap(path))
+			using (var bmp = Image.Load<Rgba32>(path))
 			{
-				image.RotateFlip(RotateFlipType.RotateNoneFlipY);
-				var data = image.LockBits(
-					new Rectangle(0, 0, image.Width, image.Height),
-					ImageLockMode.ReadOnly,
-					PixelFormat.Format32bppArgb);
+
+				byte[] pixelBytes = new byte[bmp.Width * bmp.Height * 4];
+				bmp.Mutate(x => x.Flip(FlipMode.Vertical));
+            	bmp.CopyPixelDataTo(pixelBytes);
+				bmp.Mutate(x => x.Flip(FlipMode.Vertical));
+
 				GL.TexImage2D(TextureTarget.Texture2D,
 					0,
 					PixelInternalFormat.Rgba,
-					image.Width,
-					image.Height,
+					bmp.Width,
+					bmp.Height,
 					0,
-					OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+					OpenTK.Graphics.OpenGL4.PixelFormat.Rgba,
 					PixelType.UnsignedByte,
-					data.Scan0);
+					pixelBytes);
 			}
 
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
@@ -107,15 +111,16 @@ namespace LadaEngine
 		}
 
 
-		public void UpdateData(Bitmap bmp)
+		public void UpdateData(Image<Rgba32> bmp)
 		{
 			GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2D, Handle);
-			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
-			var data = bmp.LockBits(
-				new Rectangle(0, 0, bmp.Width, bmp.Height),
-				ImageLockMode.ReadOnly,
-				System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			
+			byte[] pixelBytes = new byte[bmp.Width * bmp.Height * 4];
+
+			bmp.Mutate(x => x.Flip(FlipMode.Vertical));
+            bmp.CopyPixelDataTo(pixelBytes);
+			bmp.Mutate(x => x.Flip(FlipMode.Vertical));
 
 			GL.TexImage2D(TextureTarget.Texture2D,
 				0,
@@ -123,11 +128,9 @@ namespace LadaEngine
 				bmp.Width,
 				bmp.Height,
 				0,
-				OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
+				OpenTK.Graphics.OpenGL4.PixelFormat.Rgba,
 				PixelType.UnsignedByte,
-				data.Scan0);
-
-			bmp.UnlockBits(data);
+				pixelBytes);
 		}
 
 		/// <summary>
